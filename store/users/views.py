@@ -3,8 +3,8 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 
+from products.models import Basket
 from users.forms import UserLoginForm, UserProfileForm, UserRegistrationForm
-from users.models import User
 
 
 def login(request):
@@ -52,6 +52,7 @@ def profile(request):
     context = {
         'title': 'Store - Профиль',
         'form': form,
+        'baskets': Basket.objects.filter(user=request.user)
     }
     return render(request, 'users/profile.html', context)
 

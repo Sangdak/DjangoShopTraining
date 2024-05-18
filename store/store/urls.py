@@ -27,7 +27,7 @@ from products.views import products
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', index, name='index'),
-    path('products/', products, name='products'),
+    path('products/', include('products.urls', namespace='products')),
     path('users/', include('users.urls', namespace='users')),
 ]
 
