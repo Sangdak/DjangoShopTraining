@@ -20,13 +20,13 @@ from django.contrib import admin
 from django.urls import include, path
 
 import users
-from products.views import index
+from products.views import IndexView
 from products.views import products
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', index, name='index'),
+    path('', IndexView.as_view(), name='index'),
     path('products/', include('products.urls', namespace='products')),
     path('users/', include('users.urls', namespace='users')),
 ]
