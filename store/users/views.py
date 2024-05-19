@@ -1,4 +1,6 @@
 from django.contrib import auth, messages
+from django.contrib.auth import get_user_model
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse, reverse_lazy
@@ -55,19 +57,20 @@ class UserRegistrationView(CreateView):
 #
 
 
-class UserProfileView(UpdateView):
+class UserProfileView(LoginRequiredMixin, UpdateView):
     form_class = UserProfileForm
-    model = User
+    model = get_user_model()
     template_name = 'users/profile.html'
+    success_url = reverse_lazy('users:profile')
+    extra_context = {'title': 'Store - Личный Кабинет'}
 
     def get_context_data(self, **kwargs):
-        context = super(UserProfileView, self).get_context_data()
-        context['title'] = 'Store - Личный кабинет'
+        context = super().get_context_data(**kwargs)
         context['baskets'] = Basket.objects.filter(user=self.object)
         return context
 
-    def get_success_url(self):
-        return reverse_lazy('users:profile', arg=(self.object.id,))
+    def get_object(self, queryset=None):
+        return self.request.user
 
 
 # @login_required
