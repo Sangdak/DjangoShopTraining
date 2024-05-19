@@ -19,9 +19,7 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
 
-import users
 from products.views import IndexView
-from products.views import products
 
 
 urlpatterns = [
