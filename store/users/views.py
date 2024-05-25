@@ -1,18 +1,15 @@
-from django.contrib import auth, messages
 from django.contrib.auth import get_user_model
-from django.contrib.auth.views import LoginView
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.views import LoginView
 from django.contrib.messages.views import SuccessMessageMixin
-from django.http import HttpResponseRedirect
-from django.shortcuts import HttpResponseRedirect, render
+from django.shortcuts import HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
 from django.views.generic import TemplateView
 from django.views.generic.edit import CreateView, UpdateView
 
 from common.views import CommonTitleMixin
-from products.models import Basket
-from users.models import EmailVerification, User
 from users.forms import UserLoginForm, UserProfileForm, UserRegistrationForm
+from users.models import EmailVerification, User
 
 
 class UserLoginView(LoginView):
