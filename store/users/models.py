@@ -30,7 +30,7 @@ class EmailVerification (models.Model):
         send_mail(
             mail_subject,
             mail_message,
-            'from@example.com',
+            settings.EMAIL_HOST_USER,
             [self.user.email],
             fail_silently=False,
         )
