@@ -27,12 +27,15 @@ class EmailVerification (models.Model):
         verification_link = f'http://{"localhost:8000" if host == "localhost" else host}{link}'
         mail_subject = f'Подтверждение учётной записи для {self.user.username}'
         mail_message = f'Для подтверждения учётной записи {self.user.username} перейдите по ссылке: {verification_link}'
+        html_message = (f'Для подтверждения учётной записи {self.user.username} '
+                        f'перейдите по <a href="{verification_link}">ссылке</a>')
         send_mail(
             mail_subject,
             mail_message,
             settings.EMAIL_HOST_USER,
             [self.user.email],
             fail_silently=False,
+            html_message=html_message,
         )
 
     def is_expired(self):
