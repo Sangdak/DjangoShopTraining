@@ -36,18 +36,9 @@ class UserProfileView(LoginRequiredMixin, UpdateView):
     success_url = reverse_lazy('users:profile')
     extra_context = {'title': 'Store - Личный Кабинет'}
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['baskets'] = Basket.objects.filter(user=self.object)
-        return context
-
     def get_object(self, queryset=None):
         return self.request.user
 
-
-# def logout(request):
-#     auth.logout(request)
-#     return HttpResponseRedirect(reverse('index'))
 
 class EmailVerificationView(CommonTitleMixin, TemplateView):
     title = 'Store - Подтвердение электронной почты'
