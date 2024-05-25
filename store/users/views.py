@@ -4,37 +4,20 @@ from django.contrib.auth.views import LoginView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.http import HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import HttpResponseRedirect, render
 from django.urls import reverse, reverse_lazy
+from django.views.generic import TemplateView
 from django.views.generic.edit import CreateView, UpdateView
 
 from common.views import CommonTitleMixin
 from products.models import Basket
-from users.models import User
+from users.models import EmailVerification, User
 from users.forms import UserLoginForm, UserProfileForm, UserRegistrationForm
 
 
 class UserLoginView(LoginView):
     template_name = 'users/login.html'
     form_class = UserLoginForm
-
-
-# def login(request):
-#     if request.method == 'POST':
-#         form = UserLoginForm(data=request.POST)
-#         if form.is_valid():
-#             username = request.POST['username']
-#             password = request.POST['password']
-#             user = auth.authenticate(username=username, password=password)
-#             if user:
-#                 auth.login(request, user)
-#                 return HttpResponseRedirect(reverse('index'))
-#     else:
-#         form = UserLoginForm()
-#     context = {
-#         'form': form,
-#     }
-#     return render(request, 'users/login.html', context)
 
 
 class UserRegistrationView(CommonTitleMixin, SuccessMessageMixin, CreateView):
@@ -44,22 +27,6 @@ class UserRegistrationView(CommonTitleMixin, SuccessMessageMixin, CreateView):
     success_url = reverse_lazy('users:login')
     template_name = 'users/registration.html'
     title = 'Store - Регистрация'
-
-
-# def registration(request):
-#     if request.method == 'POST':
-#         form = UserRegistrationForm(data=request.POST)
-#         if form.is_valid():
-#             form.save()
-#             messages.success(request, 'Вы успешно зарегистрировались на сайте!')
-#             return HttpResponseRedirect(reverse('users:login'))
-#     else:
-#         form = UserRegistrationForm()
-#     context = {
-#         'form': form,
-#     }
-#     return render(request, 'users/registration.html', context)
-#
 
 
 class UserProfileView(LoginRequiredMixin, UpdateView):
@@ -78,28 +45,21 @@ class UserProfileView(LoginRequiredMixin, UpdateView):
         return self.request.user
 
 
-# @login_required
-# def profile(request):
-#     if request.method == 'POST':
-#         form = UserProfileForm(instance=request.user, data=request.POST, files=request.FILES)
-#         if form.is_valid():
-#             form.save()
-#             return HttpResponseRedirect(reverse('users:profile'))
-#         else:
-#             print(form.errors)
-#     else:
-#         form = UserProfileForm(instance=request.user)
-#
-#     baskets = Basket.objects.filter(user=request.user)
-#
-#     context = {
-#         'title': 'Store - Профиль',
-#         'form': form,
-#         'baskets': baskets,
-#     }
-#     return render(request, 'users/profile.html', context)
-#
+# def logout(request):
+#     auth.logout(request)
+#     return HttpResponseRedirect(reverse('index'))
 
-def logout(request):
-    auth.logout(request)
-    return HttpResponseRedirect(reverse('index'))
+class EmailVerificationView(CommonTitleMixin, TemplateView):
+    title = 'Store - Подтвердение электронной почты'
+    template_name = 'users/email_verification.html'
+
+    def get(self, request, *args, **kwargs):
+        code = kwargs.get('code')
+        user = User.objects.get(email=kwargs.get('email'))
+        email_verifications = EmailVerification.objects.filter(code=code, user=user)
+        if email_verifications.exists() and not email_verifications.first().is_expired():
+            user.is_verified_email = True
+            user.save()
+            return super(EmailVerificationView, self).get(request, *args, **kwargs)
+        else:
+            return HttpResponseRedirect(reverse('index'))
