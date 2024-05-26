@@ -43,7 +43,13 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.github',
+
     'django_dump_load_utf8',
+
     'products',
     'users',
 ]
@@ -56,6 +62,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    'allauth.account.middleware.AccountMiddleware',
 ]
 
 ROOT_URLCONF = 'store.urls'
@@ -71,6 +79,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.request',
+
                 'products.context_processors.baskets',
             ],
         },
@@ -137,10 +147,12 @@ STATICFILES_DIRS = [
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
 
 # Users
 
@@ -150,10 +162,34 @@ LOGIN_URL = '/users/login/'
 LOGIN_REDIRECT_URL = '/users/profile/'
 LOGOUT_REDIRECT_URL = '/'
 
+
+# Django-allauth
+
+AUTHENTICATION_BACKENDS = [
+    # Needed to login by username in Django admin, regardless of `allauth`
+    'django.contrib.auth.backends.ModelBackend',
+    # `allauth` specific authentication methods, such as login by email
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
+
+SOCIALACCOUNT_PROVIDERS = {
+    'github': {
+        'SCOPE': [
+            'user',
+            'repo',
+            'read:org',
+        ],
+    }
+}
+
+
 # Email sendings
 
-EMAIL_HOST = env.str('EMAIL_HOST')
-EMAIL_PORT = env.int('EMAIL_PORT')
-EMAIL_HOST_USER = env.str('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = env.str('EMAIL_HOST_PASSWORD')
-EMAIL_USE_SSL = env.bool('EMAIL_USE_SSL')
+if env.bool('SEND_MAIL_TO_CONSOLE'):
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+else:
+    EMAIL_HOST = env.str('EMAIL_HOST')
+    EMAIL_PORT = env.int('EMAIL_PORT')
+    EMAIL_HOST_USER = env.str('EMAIL_HOST_USER')
+    EMAIL_HOST_PASSWORD = env.str('EMAIL_HOST_PASSWORD')
+    EMAIL_USE_SSL = env.bool('EMAIL_USE_SSL')
