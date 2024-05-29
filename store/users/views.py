@@ -7,7 +7,7 @@ from django.urls import reverse, reverse_lazy
 from django.views.generic import TemplateView
 from django.views.generic.edit import CreateView, UpdateView
 
-from common.views import CommonTitleMixin
+from common.views import TitleMixin
 from users.forms import UserLoginForm, UserProfileForm, UserRegistrationForm
 from users.models import EmailVerification, User
 
@@ -17,7 +17,7 @@ class UserLoginView(LoginView):
     form_class = UserLoginForm
 
 
-class UserRegistrationView(CommonTitleMixin, SuccessMessageMixin, CreateView):
+class UserRegistrationView(TitleMixin, SuccessMessageMixin, CreateView):
     form_class = UserRegistrationForm
     model = User
     success_message = 'Вы успешно зарегистрированы!'
@@ -37,7 +37,7 @@ class UserProfileView(LoginRequiredMixin, UpdateView):
         return self.request.user
 
 
-class EmailVerificationView(CommonTitleMixin, TemplateView):
+class EmailVerificationView(TitleMixin, TemplateView):
     title = 'Store - Подтвердение электронной почты'
     template_name = 'users/email_verification.html'
 

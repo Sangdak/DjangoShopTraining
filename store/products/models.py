@@ -13,6 +13,7 @@ class ProductCategory(models.Model):
     class Meta:
         verbose_name = 'Категория'
         verbose_name_plural = 'Категории'
+        ordering = ['name']
 
 
 class Product(models.Model):
@@ -29,6 +30,7 @@ class Product(models.Model):
     class Meta:
         verbose_name = 'Продукт'
         verbose_name_plural = 'Продукты'
+        ordering = ['name']
 
 
 class BasketQuerySet(models.QuerySet):

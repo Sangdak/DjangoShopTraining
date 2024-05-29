@@ -3,11 +3,11 @@ from django.shortcuts import HttpResponseRedirect
 from django.views.generic.base import TemplateView
 from django.views.generic.list import ListView
 
-from common.views import CommonTitleMixin
+from common.views import TitleMixin
 from products.models import Basket, Product, ProductCategory
 
 
-class IndexView(CommonTitleMixin, TemplateView):
+class IndexView(TitleMixin, TemplateView):
     template_name = 'products/index.html'
     title = 'Store'
 
@@ -17,7 +17,7 @@ class IndexView(CommonTitleMixin, TemplateView):
         return context
 
 
-class ProductsListView(CommonTitleMixin, ListView):
+class ProductsListView(TitleMixin, ListView):
     model = Product
     paginate_by = 3
     template_name = 'products/products.html'
