@@ -48,6 +48,8 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'allauth.socialaccount.providers.github',
 
+    'debug_toolbar',
+
     'django_dump_load_utf8',
 
     'products',
@@ -64,6 +66,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
     'allauth.account.middleware.AccountMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
 ROOT_URLCONF = 'store.urls'
@@ -193,3 +196,9 @@ else:
     EMAIL_HOST_USER = env.str('EMAIL_HOST_USER')
     EMAIL_HOST_PASSWORD = env.str('EMAIL_HOST_PASSWORD')
     EMAIL_USE_SSL = env.bool('EMAIL_USE_SSL')
+
+
+INTERNAL_IPS = [
+    '127.0.0.1',
+    'localhost',
+]
